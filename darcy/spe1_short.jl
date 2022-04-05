@@ -1,4 +1,4 @@
-using JutulDarcy
+using JutulDarcy, Jutul
 states, reports, pth, setup = simulate_mrst_case("data/spe1/spe1.mat", extra_outputs = [:Rs, :Saturations]);
 mrst_data = setup.mrst
 ## Plot the gas injection
