@@ -18,7 +18,7 @@ function solve_gravity_column(nc = 100, tstep = repeat([0.02], 150))
     nl = nc ÷ 2
     sL = vcat(ones(nl), zeros(nc - nl))
     s0 = vcat(sL', 1 .- sL')
-    state0 = setup_state(model, Dict(:Pressure => p0, :Saturations => s0))
+    state0 = setup_state(model, Pressure = p0, Saturations = s0)
     timesteps = tstep*3600*24 # Convert time-steps from days to seconds
     # Simulate and return
     sim = Simulator(model, state0 = state0)

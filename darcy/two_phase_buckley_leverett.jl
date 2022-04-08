@@ -22,7 +22,7 @@ function solve_bl(;nc = 100, time = 1.0, nstep = 100)
             SourceTerm(nc, -irate, fractional_flow = [1.0, 0.0])]
     forces = build_forces(model, sources = src)
 
-    state0 = setup_state(model, Dict(:Pressure => p0, :Saturations => [0.0, 1.0]))
+    state0 = setup_state(model, Pressure = p0, Saturations = [0.0, 1.0])
     # Simulate and return
     sim = Simulator(model, state0 = state0)
     states, report = simulate(sim, timesteps, forces = forces)
