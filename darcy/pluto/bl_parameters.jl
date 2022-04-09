@@ -32,23 +32,36 @@ Pkg.add("PlutoUI"); using PlutoUI
 # ╔═╡ 5f179657-8ec1-43f0-8f16-2f08d87f7ad2
 Pkg.add("Plots"); using Plots
 
+# ╔═╡ 931359ca-7d00-4d4e-b9f1-fce440c3d3b9
+md"""
+Set up BL scenario
+"""
+
 # ╔═╡ 963b3405-b02c-4190-8078-2edf15a0a03e
 md"""
 ##### LaTeX
 We solve the Buckley-Levrett problem with $\lambda_o = S^N/\mu$ and $\lambda_w = S^N$
 """
 
-# ╔═╡ 9ef7e5f3-e6f4-43a0-baeb-6a0a1d667e67
-@bind nx Slider(10:1000, default = 1000)
+# ╔═╡ d6a3bac0-b5dd-4fcf-bf36-afbd57bc7be7
+@bind values PlutoUI.combine() do Child
+md"""
+$(Child("nx", Slider(10:1000, default = 1000))) Number of grid cells
+
+$(Child("nkr", Slider(1.0:0.1:3, default=2))) Corey exponent
+
+$(Child("mu", Slider(0.1:0.1:5, default = 1))) Viscosity ratio
+
+$(Child("pvi", Slider(0:0.01:2, default = 0.5))) Pore volumes injected 
+
+"""
+end
+
+# ╔═╡ 7ce78aae-5ba4-41f0-be79-6eef9ef7da58
+nx, nkr, mu, pvi = values
 
 # ╔═╡ b53d1c1f-9217-4658-8915-b9e2235e8870
 g = CartesianMesh((nx, 1, 1), (1000.0, 1.0, 1.0))
-
-# ╔═╡ 958b0b3e-032b-4e42-af0a-60d1a7521fe3
-@bind nkr Slider(1:0.1:4, default=2)
-
-# ╔═╡ 459c6cac-02f6-4dc5-a60f-62ae4e120fe4
-@bind mu Slider(0.1:0.1:5, default = 1)
 
 # ╔═╡ 3d207ba8-23fa-4c65-8da0-c17756018143
 begin
@@ -62,12 +75,6 @@ begin
 	replace_variables!(model, RelativePermeabilities = kr, PhaseViscosities = μ)
 
 end
-
-# ╔═╡ 265591ef-549c-4c69-a585-690ab0965203
-plot_title = "$nx cells, Corey exp $nkr, viscosity ratio $mu"
-
-# ╔═╡ d4b5ade0-ae35-451f-999d-28105306ee3c
-@bind pvi Slider(0:0.01:2, default = 0.5)
 
 # ╔═╡ 17d3061a-bd02-4379-b198-ebc9ac040496
 begin
@@ -100,8 +107,11 @@ end
 begin
 		sim, config = setup_reservoir_simulator(model, state0, parameters, info_level = -1)
 		states, reports = simulate(sim, dt, forces = forces, config = config);
-		s_w = hcat(map(x -> x[:Reservoir][:Saturations][1, :], states)...)
-end
+		s_w = hcat(map(x -> x[:Reservoir][:Saturations][1, :], states)...);
+end;
+
+# ╔═╡ 265591ef-549c-4c69-a585-690ab0965203
+plot_title = "$nx cells, Corey exp $nkr, viscosity ratio $mu"
 
 # ╔═╡ 21b7dd5c-ef28-4729-bbdf-62fc67a9b91c
 plot(s_w, color = :black, title = plot_title, label = nothing)
@@ -113,15 +123,14 @@ contourf(s_w, title = plot_title)
 # ╠═e25f84e0-b7e4-11ec-215a-15d61473a706
 # ╠═6ac645bd-fcff-4923-ae5d-a51ef19e8817
 # ╠═5f179657-8ec1-43f0-8f16-2f08d87f7ad2
-# ╠═b53d1c1f-9217-4658-8915-b9e2235e8870
-# ╠═3d207ba8-23fa-4c65-8da0-c17756018143
-# ╠═17d3061a-bd02-4379-b198-ebc9ac040496
-# ╠═7f3d7a62-65e9-4d64-add7-f0fb81669327
+# ╟─b53d1c1f-9217-4658-8915-b9e2235e8870
+# ╟─3d207ba8-23fa-4c65-8da0-c17756018143
+# ╟─931359ca-7d00-4d4e-b9f1-fce440c3d3b9
+# ╟─17d3061a-bd02-4379-b198-ebc9ac040496
+# ╟─7f3d7a62-65e9-4d64-add7-f0fb81669327
 # ╠═265591ef-549c-4c69-a585-690ab0965203
-# ╠═963b3405-b02c-4190-8078-2edf15a0a03e
+# ╟─963b3405-b02c-4190-8078-2edf15a0a03e
+# ╟─d6a3bac0-b5dd-4fcf-bf36-afbd57bc7be7
+# ╟─7ce78aae-5ba4-41f0-be79-6eef9ef7da58
 # ╠═21b7dd5c-ef28-4729-bbdf-62fc67a9b91c
 # ╠═940cfa2a-868c-42da-9039-b0ceef35ed73
-# ╠═9ef7e5f3-e6f4-43a0-baeb-6a0a1d667e67
-# ╠═958b0b3e-032b-4e42-af0a-60d1a7521fe3
-# ╠═459c6cac-02f6-4dc5-a60f-62ae4e120fe4
-# ╠═d4b5ade0-ae35-451f-999d-28105306ee3c
