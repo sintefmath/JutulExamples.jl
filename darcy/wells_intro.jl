@@ -42,7 +42,7 @@ dt = repeat([30.0]*day, 12*5)
 ## Inject a full pore-volume (at reference conditions) of gas
 # We first define an injection rate
 reservoir = reservoir_model(model);
-pv = reservoir.domain.grid.pore_volumes
+pv = pore_volume(model)
 inj_rate = sum(pv)/sum(dt)
 # We then set up a total rate target (positive value for injection)
 # together with a corresponding injection control that specifies the
@@ -57,13 +57,17 @@ P_ctrl = ProducerControl(bhp_target)
 controls = Dict()
 controls[:Injector] = I_ctrl
 controls[:Producer] = P_ctrl
-facility = model.models.Facility
-surface_forces = setup_forces(facility, control = controls)
 # Set up forces for the whole model. For this example, all forces are defaulted
 # (amounting to no-flow for the reservoir).
-forces = setup_forces(model, Facility = surface_forces)
+forces = setup_reservoir_forces(model, control = controls)
 ## Finally simulate!
-sim, config = setup_reservoir_simulator(model, state0, parameters)
-states, reports = simulate(sim, dt, forces = forces, config = config);
+sim, config = setup_reservoir_simulator(model, state0, parameters, info_level = 0)
+states, reports = simulate!(sim, dt, forces = forces, config = config);
+
 ## Once the simulation is done, we can plot the states
-plot_interactive(g, map(x -> x[:Reservoir], states))
+f, = plot_interactive(g, map(x -> x[:Reservoir], states))
+display(f)
+## Plot the wells
+wd = full_well_outputs(sim.model, parameters, states)
+time = report_times(reports)
+plot_well_results(wd, time)
