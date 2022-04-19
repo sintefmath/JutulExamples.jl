@@ -55,7 +55,9 @@ We solve the Buckley-Levrett problem with $\lambda_o = S^N/\mu$ and $\lambda_w =
 md"""
 $(Child("nx", Slider(10:1000, default = 1000))) Number of grid cells
 
-$(Child("nkr", Slider(1.0:0.1:3, default=2))) Corey exponent
+$(Child("nkr", Slider(1.0:0.1:4, default=2))) Corey exponent
+
+$(Child("sor", Slider(0:0.02:0.9, default=0.0))) Residual oil saturation
 
 $(Child("mu", Slider(0.1:0.1:5, default = 1))) Viscosity ratio
 
@@ -65,7 +67,7 @@ $(Child("pvi", Slider(0:0.01:2, default = 0.5))) Pore volumes injected
 end
 
 # ╔═╡ 7ce78aae-5ba4-41f0-be79-6eef9ef7da58
-nx, nkr, mu, pvi = values
+nx, nkr, sor, mu, pvi = values
 
 # ╔═╡ b53d1c1f-9217-4658-8915-b9e2235e8870
 g = CartesianMesh((nx, 1, 1), (1000.0, 1.0, 1.0))
@@ -78,7 +80,7 @@ begin
 	sys = ImmiscibleSystem((AqueousPhase(), LiquidPhase()))
 	model, parameters = setup_reservoir_model(g, sys, wells = [I, P],
 		                                              block_backend = false)
-	kr = BrooksCoreyRelPerm(2, nkr)
+	kr = BrooksCoreyRelPerm(2, nkr, [0.0, sor])
 	μ = ConstantVariables([1, mu].*1e-3)
 	model = replace_variables!(model, RelativePermeabilities = kr,
 									  PhaseViscosities = μ)
