@@ -68,6 +68,6 @@ states, reports = simulate!(sim, dt, forces = forces, config = config);
 f, = plot_interactive(g, map(x -> x[:Reservoir], states))
 display(f)
 ## Plot the wells
-wd = full_well_outputs(sim.model, parameters, states)
+wd = full_well_outputs(sim.model, parameters, states, forces)
 time = report_times(reports)
 plot_well_results(wd, time)
