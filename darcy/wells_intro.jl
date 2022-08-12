@@ -24,14 +24,14 @@ plot_well!(ax, g, I, textscale = 0.1)
 plot_well!(ax, g, P, color = :darkblue, textscale = 0.1)
 ## Set up a two-phase immiscible system and define a density secondary variable
 phases = (LiquidPhase(), VaporPhase())
-sys = ImmiscibleSystem(phases)
 rhoLS = 1000.0
 rhoGS = 100.0
 rhoS = [rhoLS, rhoGS]
+sys = ImmiscibleSystem(phases, reference_densities = rhoS)
 c = [1e-6/bar, 1e-4/bar]
 ρ = ConstantCompressibilityDensities(p_ref = 1*bar, density_ref = rhoS, compressibility = c)
 ## Set up a reservoir model that contains the reservoir, wells and a facility that controls the wells
-model, parameters = setup_reservoir_model(g, sys, wells = [I, P], reference_densities = rhoS)
+model, parameters = setup_reservoir_model(g, sys, wells = [I, P])
 display(model)
 ## Replace the density function with our custom version
 replace_variables!(model, PhaseMassDensities = ρ)
@@ -68,6 +68,6 @@ states, reports = simulate!(sim, dt, forces = forces, config = config);
 f, = plot_interactive(g, map(x -> x[:Reservoir], states))
 display(f)
 ## Plot the wells
-wd = full_well_outputs(sim.model, parameters, states, forces)
+wd = full_well_outputs(sim.model, states, forces)
 time = report_times(reports)
 plot_well_results(wd, time)
