@@ -12,8 +12,7 @@ function solve_gravity_column(nc = 100, tstep = repeat([0.02], 150))
     sys = ImmiscibleSystem([L, V])
     model = SimulationModel(G, sys)
     # Replace density with a lighter pair
-    s = model.secondary_variables
-    s[:PhaseMassDensities] = ConstantCompressibilityDensities(sys, p0, [rhoLS, rhoVS], [cl, cv])
+    set_secondary_variables!(model, PhaseMassDensities = ConstantCompressibilityDensities(sys, p0, [rhoLS, rhoVS], [cl, cv]))
     # Put heavy phase on top and light phase on bottom
     nl = nc ÷ 2
     sL = vcat(ones(nl), zeros(nc - nl))

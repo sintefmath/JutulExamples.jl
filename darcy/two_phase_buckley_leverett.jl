@@ -5,26 +5,23 @@ function solve_bl(;nc = 100, time = 1.0, nstep = 100)
     nc = number_of_cells(G)
     timesteps = tstep*3600*24 # Convert time-steps from days to seconds
 
-    # Definition of fluid phases
     bar = 1e5
     p0 = 100*bar
-    L, V = LiquidPhase(), VaporPhase()
     # Define system and realize on grid
-    sys = ImmiscibleSystem([L, V])
+    sys = ImmiscibleSystem((LiquidPhase(), VaporPhase()))
     model = SimulationModel(G, sys)
-    s = model.secondary_variables
-    s[:RelativePermeabilities] = BrooksCoreyRelPerm(sys, [2.0, 2.0], [0.2, 0.2])
-    s[:PhaseViscosities] = ConstantVariables([1e-3, 5e-3]) # 1 and 5 cP
-
+    kr = BrooksCoreyRelPerm(sys, [2.0, 2.0], [0.2, 0.2])
+    replace_variables!(model, RelativePermeabilities = kr)
     tot_time = sum(timesteps)
     irate = 500*sum(G.grid.pore_volumes)/tot_time
     src  = [SourceTerm(1, irate, fractional_flow = [1.0, 0.0]), 
             SourceTerm(nc, -irate, fractional_flow = [1.0, 0.0])]
     forces = setup_forces(model, sources = src)
 
+    parameters = setup_parameters(model, PhaseViscosities = [1e-3, 5e-3]) # 1 and 5 cP
     state0 = setup_state(model, Pressure = p0, Saturations = [0.0, 1.0])
     # Simulate and return
-    sim = Simulator(model, state0 = state0)
+    sim = Simulator(model, state0 = state0, parameters = parameters)
     states, report = simulate(sim, timesteps, forces = forces)
     return states, model, report
 end
