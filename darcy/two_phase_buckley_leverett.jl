@@ -1,6 +1,7 @@
 using JutulDarcy, Jutul
 function solve_bl(;nc = 100, time = 1.0, nstep = 100)
-    tstep = repeat([time/nstep], nstep)
+    T = time
+    tstep = repeat([T/nstep], nstep)
     G = get_1d_reservoir(nc)
     nc = number_of_cells(G)
     timesteps = tstep*3600*24 # Convert time-steps from days to seconds
@@ -28,7 +29,7 @@ end
 ## Perform test
 n, n_f = 100, 1000
 states, model, report = solve_bl(nc = n)
-states_refined, = solve_bl(nc = n_f, nstep = 1000)
+states_refined, = solve_bl(nc = n_f, nstep = 1000);
 ## Plot results
 using GLMakie
 x = range(0, stop = 1, length = n)
