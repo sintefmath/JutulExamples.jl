@@ -1,7 +1,3 @@
-#activate("../JutulExamples.jl/darcy/.")
-
-#using Pkg
-#Pkg.activate("./../JutulExamples.jl/darcy")
 
 using MultiComponentFlash
 h2o = MolecularProperty(0.018015268, 22.064e6, 647.096, 5.595e-05, 0.3442920843)
@@ -53,12 +49,7 @@ day = 24*3600.0
 dt0 = repeat([1]*day, 26)
 dt1 = repeat([10.0]*day, 180)
 dt = append!(dt0, dt1)
-#reservoir = reservoir_model(model)
-#pv = pore_volume(model)
-#inj_rate = sum(pv)/sum(dt)
-#rate_target = TotalRateTarget(inj_rate)
 rate_target = TotalRateTarget(9.5066e-06)
-#ϵ = 0
 I_ctrl = InjectorControl(rate_target, [0, 1], density = rhoVS)
 bhp_target = BottomHolePressureTarget(50*bar)
 P_ctrl = ProducerControl(bhp_target)
