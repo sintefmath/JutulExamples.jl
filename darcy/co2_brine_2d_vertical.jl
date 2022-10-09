@@ -36,12 +36,12 @@ rhoS = [rhoLS, rhoVS]
 L, V = LiquidPhase(), VaporPhase()
 # Define system and realize on grid
 sys = MultiPhaseCompositionalSystemLV(eos, (L, V))
-model, parameters = setup_reservoir_model(res, sys, wells = [inj, prod], reference_densities = rhoS, block_backend = true)
+model, parameters = setup_reservoir_model(res, sys, wells = [inj, prod], reference_densities = rhoS, block_backend = true);
 kr = BrooksCoreyRelPerm(sys, 2.0, 0.0, 1.0)
 model = replace_variables!(model, RelativePermeabilities = kr)
 T0 = repeat([303.15], 1, nc)
 parameters[:Reservoir][:Temperature] = T0
-state0 = setup_reservoir_state(model, Pressure = 50*bar, OverallMoleFractions = [1.0, 0.0])
+state0 = setup_reservoir_state(model, Pressure = 50*bar, OverallMoleFractions = [1.0, 0.0]);
 
 
 # 5 year (5*365.24 days)
@@ -59,8 +59,8 @@ controls[:Injector] = I_ctrl
 controls[:Producer] = P_ctrl
 forces = setup_reservoir_forces(model, control = controls)
 
-sim, config = setup_reservoir_simulator(model, state0, parameters, info_level = -1)
-states, reports = simulate!(sim, dt, forces = forces, config = config)
+sim, config = setup_reservoir_simulator(model, state0, parameters, info_level = -1);
+states, reports = simulate!(sim, dt, forces = forces, config = config);
 
 
 ## Once the simulation is done, we can plot the states

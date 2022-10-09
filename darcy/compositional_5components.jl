@@ -46,7 +46,7 @@ kr = BrooksCoreyRelPerm(sys, 2.0, 0.0, 1.0)
 model = replace_variables!(model, RelativePermeabilities = kr)
 T0 = repeat([387.45], 1, nc)
 parameters[:Reservoir][:Temperature] = T0
-state0 = setup_reservoir_state(model, Pressure = 225*bar, OverallMoleFractions = [0.463, 0.01640, 0.20520, 0.19108, 0.12432])
+state0 = setup_reservoir_state(model, Pressure = 225*bar, OverallMoleFractions = [0.463, 0.01640, 0.20520, 0.19108, 0.12432]);
 
 
 day = 24*3600.0
