@@ -1,6 +1,6 @@
 using JutulDarcy, Jutul
-function solve_gravity_column(nc = 100, tstep = repeat([0.02], 150))
-    G = get_1d_reservoir(nc, z_max = 1)
+function solve_gravity_column(nc = 100, tstep = repeat([0.02], 150); general_ad = false)
+    G = get_1d_reservoir(nc, z_max = 1, general_ad = general_ad)
     nc = number_of_cells(G)
     # Definition of fluid phases
     bar = 1e5
@@ -31,5 +31,5 @@ using GLMakie
 tmp = vcat(map((x) -> x[:Saturations][1, :]', states)...)
 f = Figure()
 ax = Axis(f[1, 1], xlabel = "Depth", ylabel = "Time", title = "Gravity segregation")
-GLMakie.heatmap!(ax, tmp)
+heatmap!(ax, tmp)
 display(f)

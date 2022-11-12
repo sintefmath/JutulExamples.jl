@@ -1,8 +1,8 @@
 using JutulDarcy, Jutul
-function solve_bl(;nc = 100, time = 1.0, nstep = 100)
+function solve_bl(;nc = 100, time = 1.0, nstep = 100, general_ad = false)
     T = time
     tstep = repeat([T/nstep], nstep)
-    G = get_1d_reservoir(nc)
+    G = get_1d_reservoir(nc, general_ad = general_ad)
     nc = number_of_cells(G)
     timesteps = tstep*3600*24 # Convert time-steps from days to seconds
 
@@ -37,8 +37,8 @@ x_f = range(0, stop = 1, length = n_f)
 f = Figure()
 ax = Axis(f[1, 1], ylabel = "Saturation", title = "Buckley-Leverett")
 for i in 1:6:length(states)
-    GLMakie.lines!(ax, x, states[i][:Saturations][1, :], color = :darkgray)
+    lines!(ax, x, states[i][:Saturations][1, :], color = :darkgray)
 end
 # Plot refined reference
-GLMakie.lines!(ax, x_f, states_refined[end][:Saturations][1, :], color = :red)
+lines!(ax, x_f, states_refined[end][:Saturations][1, :], color = :red)
 display(f)
