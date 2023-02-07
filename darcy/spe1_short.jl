@@ -15,6 +15,6 @@ g = MRSTWrapMesh(mrst_data["G"])
 W = mrst_data["schedule"]["control"][1]["W"]
 plot_reservoir(g, states, wells = W)
 ## Plot well results
-wd = full_well_outputs(setup.sim.model, states, setup.forces)
+wd = full_well_outputs(setup.sim.model, states, setup.case.forces)
 time = report_times(reports)
 plot_well_results(wd, time)
