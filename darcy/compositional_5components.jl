@@ -32,8 +32,8 @@ inj = setup_vertical_well(g, K, 1, 1, name = :Injector)
 
 ## Plot the permeability (scaled to Darcy) and the wells
 fig, ax, p = plot_cell_data(g, K[:])
-plot_well!(ax, g, inj, textscale = 0.1)
-plot_well!(ax, g, prod, color = :darkblue, textscale = 0.1)
+plot_well!(ax, g, inj)
+plot_well!(ax, g, prod, color = :darkblue)
 
 
 rhoLS, rhoVS = 1000.0, 100.0
@@ -61,7 +61,7 @@ controls[:Injector] = I_ctrl
 controls[:Producer] = P_ctrl
 forces = setup_reservoir_forces(model, control = controls)
 
-sim, config = setup_reservoir_simulator(model, state0, parameters, info_level = -1);
+sim, config = setup_reservoir_simulator(model, state0, parameters);
 states, reports = simulate!(sim, dt, forces = forces, config = config);
 
 
