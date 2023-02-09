@@ -13,15 +13,15 @@ plot_mesh(g)
 ## Create a layered permeability field
 Darcy = 9.869232667160130e-13
 nlayer = nx*ny
-K = vcat(repeat([0.65], nlayer), repeat([0.3], nlayer), repeat([0.5], nlayer), repeat([0.2], nlayer))*Darcy
+K = vcat(repeat([0.65], nlayer), repeat([0.3], nlayer), repeat([0.5], nlayer), repeat([0.2], nlayer))'*Darcy
 ## Set up a vertical well in the first corner, perforated in all layers
 P = setup_vertical_well(g, K, 1, 1, name = :Producer);
 ## Set up an injector in the upper left corner
 I = setup_well(g, K, [(nx, ny, 1)], name = :Injector);
 ## Plot the permeability (scaled to Darcy) and the wells
 fig, ax, p = plot_cell_data(g, K/Darcy)
-plot_well!(ax, g, I, textscale = 0.1)
-plot_well!(ax, g, P, color = :darkblue, textscale = 0.1)
+plot_well!(ax, g, I)
+plot_well!(ax, g, P, color = :darkblue)
 ## Set up a two-phase immiscible system and define a density secondary variable
 phases = (LiquidPhase(), VaporPhase())
 rhoLS = 1000.0
@@ -31,7 +31,9 @@ sys = ImmiscibleSystem(phases, reference_densities = rhoS)
 c = [1e-6/bar, 1e-4/bar]
 ρ = ConstantCompressibilityDensities(p_ref = 1*bar, density_ref = rhoS, compressibility = c)
 ## Set up a reservoir model that contains the reservoir, wells and a facility that controls the wells
-model, parameters = setup_reservoir_model(g, sys, wells = [I, P])
+geo = tpfv_geometry(g)
+D = discretized_domain_tpfv_flow(geo, permeability = K)
+model, parameters = setup_reservoir_model(D, sys, wells = [I, P])
 display(model)
 ## Replace the density function with our custom version
 replace_variables!(model, PhaseMassDensities = ρ)
