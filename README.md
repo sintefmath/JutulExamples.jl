@@ -1,6 +1,10 @@
 # JutulExamples
+> [!CAUTION]
+> This repository is deprecated. Examples can now be found in the examples folder of the respective repositories mentioned here.
+
+
  
-This repositories contains examples for [Jutul.jl](https://github.com/sintefmath/Jutul.jl/) and the porous media simulator [JutulDarcy.jl](https://github.com/sintefmath/JutulDarcy.jl/).
+This repositories contained examples for [Jutul.jl](https://github.com/sintefmath/Jutul.jl/) and the porous media simulator [JutulDarcy.jl](https://github.com/sintefmath/JutulDarcy.jl/).
 
 To get started, you will have to add the necessary packages. Start by going to the `darcy` subfolder in your favorite terminal, launch a recent version of julia and run the following:
 ```julia
